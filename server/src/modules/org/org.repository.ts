@@ -1,0 +1,13 @@
+import { BaseRepository } from '../../shared/repository/BaseRepository.js';
+import { PositionModel, type PositionDoc } from './position.model.js';
+import { SkillModel, type SkillDoc } from './skill.model.js';
+
+class PositionRepository extends BaseRepository<PositionDoc> {
+  protected readonly searchableFields = ['title', 'notes'];
+}
+export const positionRepository = new PositionRepository(PositionModel);
+
+class SkillRepository extends BaseRepository<SkillDoc> {
+  protected readonly searchableFields = ['skill'];
+}
+export const skillRepository = new SkillRepository(SkillModel);

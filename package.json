@@ -1,0 +1,25 @@
+{
+  "name": "nova",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Nova — Engineering Intelligence Platform for Engineering Managers, Heads of Engineering and CTOs",
+  "workspaces": [
+    "server",
+    "web"
+  ],
+  "scripts": {
+    "dev": "concurrently -n api,web -c blue,green \"npm run dev -w server\" \"npm run dev -w web\"",
+    "build": "npm run build -w server && npm run build -w web",
+    "test": "npm run test -w server",
+    "lint": "npm run lint -w server && npm run lint -w web",
+    "seed": "npm run seed -w server",
+    "docker:up": "docker compose up --build",
+    "docker:down": "docker compose down -v"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
