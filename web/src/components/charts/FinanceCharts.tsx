@@ -35,9 +35,11 @@ export function FinChartCard({ title, children, action }: { title: string; child
   );
 }
 
-export function CostLine({ data, keys }: { data: Record<string, unknown>[]; keys: { key: string; color: string }[] }) {
+type Dims = { width?: number; height?: number };
+
+export function CostLine({ data, keys, width, height }: { data: Record<string, unknown>[]; keys: { key: string; color: string }[] } & Dims) {
   return (
-    <LineChart data={data} margin={{ top: 5, right: 10, left: 0, bottom: 0 }}>
+    <LineChart width={width} height={height} data={data} margin={{ top: 5, right: 10, left: 0, bottom: 0 }}>
       <CartesianGrid strokeDasharray="3 3" stroke={grid} vertical={false} />
       <XAxis dataKey="period" {...axis} />
       <YAxis tickFormatter={usd} {...axis} />
@@ -47,9 +49,9 @@ export function CostLine({ data, keys }: { data: Record<string, unknown>[]; keys
   );
 }
 
-export function CostBar({ data, dataKey, nameKey, color = PALETTE[0] }: { data: Record<string, unknown>[]; dataKey: string; nameKey: string; color?: string }) {
+export function CostBar({ data, dataKey, nameKey, color = PALETTE[0], width, height }: { data: Record<string, unknown>[]; dataKey: string; nameKey: string; color?: string } & Dims) {
   return (
-    <BarChart data={data} margin={{ top: 5, right: 10, left: 0, bottom: 0 }}>
+    <BarChart width={width} height={height} data={data} margin={{ top: 5, right: 10, left: 0, bottom: 0 }}>
       <CartesianGrid strokeDasharray="3 3" stroke={grid} vertical={false} />
       <XAxis dataKey={nameKey} {...axis} />
       <YAxis tickFormatter={usd} {...axis} />
@@ -61,9 +63,9 @@ export function CostBar({ data, dataKey, nameKey, color = PALETTE[0] }: { data: 
   );
 }
 
-export function CostDonut({ data, dataKey, nameKey }: { data: Record<string, unknown>[]; dataKey: string; nameKey: string }) {
+export function CostDonut({ data, dataKey, nameKey, width, height }: { data: Record<string, unknown>[]; dataKey: string; nameKey: string } & Dims) {
   return (
-    <PieChart>
+    <PieChart width={width} height={height}>
       <Pie data={data} dataKey={dataKey} nameKey={nameKey} innerRadius={55} outerRadius={85} paddingAngle={2}>
         {data.map((_, i) => <Cell key={i} fill={PALETTE[i % PALETTE.length]} />)}
       </Pie>

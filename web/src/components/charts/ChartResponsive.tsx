@@ -9,7 +9,13 @@ import { cloneElement, useEffect, useRef, useState, type ReactElement } from 're
  * clean observer teardown) and injects explicit `width`/`height` into the chart,
  * exactly like ResponsiveContainer does, but deterministically.
  */
-export function ChartResponsive({ height = 224, children }: { height?: number; children: ReactElement }) {
+export function ChartResponsive({
+  height = 224,
+  children,
+}: {
+  height?: number;
+  children: ReactElement<{ width?: number; height?: number }>;
+}) {
   const ref = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(0);
 
@@ -23,9 +29,11 @@ export function ChartResponsive({ height = 224, children }: { height?: number; c
     return () => ro.disconnect();
   }, []);
 
+  // Inject explicit dimensions into the chart wrapper, which forwards them to the
+  // underlying recharts chart (LineChart/BarChart/…). Render only once measured.
   return (
     <div ref={ref} style={{ width: '100%', height }}>
-      {width > 0 ? cloneElement(children, { width, height } as Partial<unknown>) : null}
+      {width > 0 ? cloneElement(children, { width, height }) : null}
     </div>
   );
 }

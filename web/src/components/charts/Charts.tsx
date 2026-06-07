@@ -37,9 +37,11 @@ export function ChartCard({ title, children }: { title: string; children: React.
 
 const fmtDate = (d: string) => d.slice(5); // MM-DD
 
-export function TrendLine({ data, dataKey, color = 'hsl(var(--primary))' }: { data: { date: string }[]; dataKey: string; color?: string }) {
+type Dims = { width?: number; height?: number };
+
+export function TrendLine({ data, dataKey, color = 'hsl(var(--primary))', width, height }: { data: { date: string }[]; dataKey: string; color?: string } & Dims) {
   return (
-    <LineChart data={data} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
+    <LineChart width={width} height={height} data={data} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
       <CartesianGrid strokeDasharray="3 3" stroke={grid} vertical={false} />
       <XAxis dataKey="date" tickFormatter={fmtDate} {...axis} />
       <YAxis {...axis} />
@@ -49,9 +51,9 @@ export function TrendLine({ data, dataKey, color = 'hsl(var(--primary))' }: { da
   );
 }
 
-export function TrendBar({ data, dataKey, color = 'hsl(var(--primary))' }: { data: { date: string }[]; dataKey: string; color?: string }) {
+export function TrendBar({ data, dataKey, color = 'hsl(var(--primary))', width, height }: { data: { date: string }[]; dataKey: string; color?: string } & Dims) {
   return (
-    <BarChart data={data} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
+    <BarChart width={width} height={height} data={data} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
       <CartesianGrid strokeDasharray="3 3" stroke={grid} vertical={false} />
       <XAxis dataKey="date" tickFormatter={fmtDate} {...axis} />
       <YAxis {...axis} />
@@ -61,9 +63,9 @@ export function TrendBar({ data, dataKey, color = 'hsl(var(--primary))' }: { dat
   );
 }
 
-export function CapacityArea({ data }: { data: { date: string; available: number; committed: number }[] }) {
+export function CapacityArea({ data, width, height }: { data: { date: string; available: number; committed: number }[] } & Dims) {
   return (
-    <AreaChart data={data} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
+    <AreaChart width={width} height={height} data={data} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
       <defs>
         <linearGradient id="cap" x1="0" y1="0" x2="0" y2="1">
           <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.4} />
