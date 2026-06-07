@@ -8,3 +8,7 @@ coverage/
 .DS_Store
 .vite/
 graphify-out/
+
+# Local working notes (not for the public repo)
+nova.in
+PENDIENTES.md
