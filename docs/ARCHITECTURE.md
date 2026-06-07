@@ -294,7 +294,7 @@ flowchart LR
 
 | Class | Examples | Has a form? |
 | --- | --- | --- |
-| **Source — manual** | users, teams, projects, incidents, tech debt, architecture, OKRs, 1:1s, positions, candidates, skills, all 9 finance cost ledgers | ✅ yes |
+| **Source — manual** | users, teams, projects, incidents, tech debt, architecture, OKRs, 1:1s, positions, candidates, skill catalog, skill assessments, all 9 finance cost ledgers | ✅ yes |
 | **Source — integration** | DORA metric snapshots (GitHub) | via integration sync |
 | **Derived** | Executive dashboard, OKR roll-up, delivery forecast, people/retention dashboards, finance analytics, AI insights | ❌ computed |
 
@@ -453,6 +453,7 @@ flowchart LR
   OrgG --> orgov["Org Overview (D)"]
   OrgG --> head["Headcount & Hiring (E: positions, candidates)"]
   OrgG --> skills["Skills Matrix (E: assessments)"]
+  OrgG --> skillcat["Skill Catalog (E: skill definitions)"]
   OrgG --> ret["Retention Risk (D)"]
   OrgG --> eng["Engagement / eNPS (E: pulse responses)"]
 

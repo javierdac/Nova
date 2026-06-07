@@ -20,10 +20,10 @@ import {
   Bug,
   Clock,
   TrendingUp,
-  Bot,
   FileText,
   UserPlus,
   GraduationCap,
+  Library,
   HeartPulse,
   Target,
   LineChart,
@@ -56,6 +56,7 @@ const org = [
   { to: '/org', key: 'nav.peopleDashboard', icon: Network, end: true },
   { to: '/org/headcount', key: 'nav.headcount', icon: UserPlus },
   { to: '/org/skills', key: 'nav.skills', icon: GraduationCap },
+  { to: '/org/skill-catalog', key: 'nav.skillCatalog', icon: Library },
   { to: '/org/retention', key: 'nav.retention', icon: HeartPulse },
   { to: '/org/engagement', key: 'nav.engagement', icon: Smile },
 ];
@@ -76,7 +77,8 @@ const finance = [
   { to: '/finance/incidents', key: 'nav.incidentCosts', icon: Bug },
   { to: '/finance/cost-of-delay', key: 'nav.costOfDelay', icon: Clock },
   { to: '/finance/hiring-roi', key: 'nav.hiringRoi', icon: TrendingUp },
-  { to: '/finance/advisor', key: 'nav.aiCostAdvisor', icon: Bot },
+  // Asesor de Costos IA oculto por ahora (a pedido). La ruta sigue activa.
+  // { to: '/finance/advisor', key: 'nav.aiCostAdvisor', icon: Bot },
   { to: '/finance/reports', key: 'nav.executiveReports', icon: FileText },
 ];
 

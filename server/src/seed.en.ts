@@ -20,6 +20,7 @@ import { OneOnOneModel } from './modules/oneOnOnes/oneOnOne.model.js';
 import { MetricSnapshotModel } from './modules/metrics/metric.model.js';
 import { PositionModel } from './modules/org/position.model.js';
 import { SkillModel } from './modules/org/skill.model.js';
+import { SkillCatalogModel } from './modules/org/skillCatalog.model.js';
 import { ObjectiveModel } from './modules/okrs/objective.model.js';
 import { PulseResponseModel } from './modules/engagement/pulse.model.js';
 import { seedFinance } from './modules/finance/finance.seed.js';
@@ -42,6 +43,7 @@ async function seed() {
     MetricSnapshotModel.deleteMany({}),
     PositionModel.deleteMany({}),
     SkillModel.deleteMany({}),
+    SkillCatalogModel.deleteMany({}),
     ObjectiveModel.deleteMany({}),
     PulseResponseModel.deleteMany({}),
   ]);
@@ -187,6 +189,19 @@ async function seed() {
     { title: 'SRE / Platform Engineer', team: beta._id, seniority: 'senior', status: 'offer', budgetedMonthlyCost: 12000, openedAt: days(55), pipeline: [{ name: 'Tom Becker', stage: 'offer' }, { name: 'Nadia Petrova', stage: 'rejected' }] },
     { title: 'QA Automation Engineer', team: alpha._id, seniority: 'mid', status: 'filled', budgetedMonthlyCost: 7000, openedAt: days(90), filledAt: days(35), filledBy: cervi._id },
     { title: 'Engineering Manager', team: beta._id, seniority: 'staff', status: 'planned', budgetedMonthlyCost: 14000, targetStartDate: days(-90) },
+  ]);
+
+  /* ── Skill catalog (org-wide skill definitions) ─────── */
+  await SkillCatalogModel.create([
+    { name: 'TypeScript', category: 'language', description: 'Primary backend and frontend language.' },
+    { name: 'Go', category: 'language', description: 'High-performance platform services.' },
+    { name: 'React', category: 'framework', description: 'UI framework for customer-facing apps.' },
+    { name: 'Node.js', category: 'platform', description: 'Runtime for the backend services.' },
+    { name: 'PostgreSQL', category: 'platform', description: 'Primary relational database.' },
+    { name: 'Kubernetes', category: 'platform', description: 'Container orchestration.' },
+    { name: 'AWS', category: 'platform', description: 'Primary cloud provider.' },
+    { name: 'System Design', category: 'domain', description: 'Distributed systems architecture.' },
+    { name: 'Test Automation', category: 'tooling', description: 'Automated testing frameworks.' },
   ]);
 
   /* ── Skills matrix (note the single-expert bus factors) ── */

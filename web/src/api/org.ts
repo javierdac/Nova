@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
-import type { AttritionRisk, Funnel, Headcount, OrgChart, Paginated, Position, Skill, SkillMatrix } from '@/types';
+import type { AttritionRisk, Funnel, Headcount, OrgChart, Paginated, Position, Skill, SkillCatalogItem, SkillMatrix } from '@/types';
 
 type Query = Record<string, string | number | boolean | undefined>;
 
@@ -29,6 +29,7 @@ export const useAttritionRisk = () => useQuery({ queryKey: ['org-attrition'], qu
 /* ── Positions & skills lists ──────────────────────────── */
 export const usePositions = (params?: Query) => useQuery({ queryKey: ['org-positions', params], queryFn: () => getList<Position>('/org/positions', params) });
 export const useSkills = (params?: Query) => useQuery({ queryKey: ['org-skills', params], queryFn: () => getList<Skill>('/org/skills', params) });
+export const useSkillCatalog = (params?: Query) => useQuery({ queryKey: ['org-skill-catalog', params], queryFn: () => getList<SkillCatalogItem>('/org/skill-catalog', params) });
 
 function useResourceMutations(resource: string, invalidateKeys: string[]) {
   const qc = useQueryClient();
@@ -42,6 +43,7 @@ function useResourceMutations(resource: string, invalidateKeys: string[]) {
 
 export const usePositionMutations = () => useResourceMutations('positions', ['org-positions', 'org-headcount', 'org-funnel']);
 export const useSkillMutations = () => useResourceMutations('skills', ['org-skills', 'org-skills-matrix']);
+export const useSkillCatalogMutations = () => useResourceMutations('skill-catalog', ['org-skill-catalog']);
 
 /** Add a candidate to a position's hiring pipeline. */
 export const useAddCandidate = () => {

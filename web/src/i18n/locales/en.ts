@@ -21,6 +21,7 @@ export const en = {
       peopleDashboard: 'Org Overview',
       headcount: 'Headcount & Hiring',
       skills: 'Skills Matrix',
+      skillCatalog: 'Skill Catalog',
       retention: 'Retention Risk',
       delivery: 'Delivery',
       okrs: 'OKRs',
@@ -128,6 +129,7 @@ export const en = {
       forecast: 'The forecast is computed from active projects and their milestones, managed in:',
       investment: 'Capacity allocation is derived from data entered in:',
       finance: 'This dashboard also consolidates costs entered on other Finance pages:',
+      skills: 'Skill names come from the org-wide catalog, managed in:',
     },
 
     auth: {
@@ -175,6 +177,7 @@ export const en = {
       costAdvisor: { title: 'AI Cost Advisor', subtitle: 'Savings opportunities, risk warnings and executive recommendations.' },
       executiveReports: { title: 'Executive Reports', subtitle: 'AI-generated weekly cost report for leadership.' },
       skills: { title: 'Skills Matrix', subtitle: 'Team capability heatmap and bus-factor (key-person) risk.' },
+      skillCatalog: { title: 'Skill Catalog', subtitle: 'Define the org-wide skills (e.g. TypeScript, Go) that are then assigned to people.' },
       okrs: { title: 'OKRs', subtitle: 'Objectives and key results · {{quarter}}' },
       forecast: { title: 'Delivery Forecast', subtitle: 'Monte Carlo predictability per active project — P50/P85 dates and on-time probability.' },
       investment: { title: 'Engineering Investment', subtitle: 'Where does capacity go? New value vs. keeping the lights on, tech debt and incidents.' },
@@ -567,7 +570,17 @@ export const en = {
       interest: 'Interest',
       assessments: 'Skills by person',
       addAssessment: 'Add skill',
+      skillRequired: 'Pick or enter a skill.',
+      newSkillOption: '➕ Create new skill…',
+      newSkillPlaceholder: 'Skill name (e.g. Rust)',
       categories: { language: 'language', framework: 'framework', platform: 'platform', domain: 'domain', soft: 'soft', tooling: 'tooling' },
+    },
+
+    skillCatalog: {
+      add: 'New skill',
+      total: 'Skills in catalog',
+      categories: 'Categories used',
+      name: 'Skill',
     },
 
     okrs: {
@@ -587,6 +600,11 @@ export const en = {
       firstKrPh: 'e.g. Reach 99.9% uptime',
       current: 'Current',
       confidenceLabel: 'Confidence',
+      confidenceHelp: 'How likely you are to hit the target (0–100). It is the owner’s judgment, separate from measured progress. 70+ = on track · 45–69 = at risk · under 45 = off track.',
+      keyResult: 'Key result',
+      addKr: 'Add key result',
+      editKr: 'Edit key result',
+      progressHint: 'Progress (%) is computed from Current / Target.',
       statuses: { on_track: 'on track', at_risk: 'at risk', off_track: 'off track', achieved: 'achieved' },
     },
 

@@ -6,12 +6,12 @@ import {
   CartesianGrid,
   Line,
   LineChart,
-  ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { ChartResponsive } from '@/components/charts/ChartResponsive';
 
 const axis = { stroke: 'hsl(var(--muted-foreground))', fontSize: 11 };
 const grid = 'hsl(var(--border))';
@@ -29,12 +29,7 @@ export function ChartCard({ title, children }: { title: string; children: React.
         <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
       </CardHeader>
       <CardContent className="pt-2">
-        {/* Fixed pixel height (width stays responsive). Using height="100%" makes
-            recharts' ResponsiveContainer collapse to 0 on first mount when the
-            parent's % height isn't resolved yet → blank chart. */}
-        <ResponsiveContainer width="100%" height={224}>
-          {children as React.ReactElement}
-        </ResponsiveContainer>
+        <ChartResponsive height={224}>{children as React.ReactElement}</ChartResponsive>
       </CardContent>
     </Card>
   );

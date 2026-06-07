@@ -21,6 +21,7 @@ export const es = {
       peopleDashboard: 'Vista de Org',
       headcount: 'Headcount y Hiring',
       skills: 'Matriz de Skills',
+      skillCatalog: 'Catálogo de Skills',
       retention: 'Riesgo de Fuga',
       delivery: 'Entrega',
       okrs: 'OKRs',
@@ -128,6 +129,7 @@ export const es = {
       forecast: 'El pronóstico se calcula a partir de los proyectos activos y sus hitos, gestionados en:',
       investment: 'La asignación de capacidad se deriva de los datos cargados en:',
       finance: 'El panel también consolida costos cargados en otras páginas de Finanzas:',
+      skills: 'Los nombres de skills salen del catálogo de la organización, que se gestiona en:',
     },
 
     auth: {
@@ -175,6 +177,7 @@ export const es = {
       costAdvisor: { title: 'Asesor de Costos IA', subtitle: 'Oportunidades de ahorro, alertas de riesgo y recomendaciones ejecutivas.' },
       executiveReports: { title: 'Reportes Ejecutivos', subtitle: 'Reporte semanal de costos generado por IA para liderazgo.' },
       skills: { title: 'Matriz de Skills', subtitle: 'Mapa de capacidades del equipo y riesgo de bus-factor (persona clave).' },
+      skillCatalog: { title: 'Catálogo de Skills', subtitle: 'Definí las skills de la organización (ej. TypeScript, Go) que luego se asignan a las personas.' },
       okrs: { title: 'OKRs', subtitle: 'Objetivos y resultados clave · {{quarter}}' },
       forecast: { title: 'Pronóstico de Entrega', subtitle: 'Previsibilidad Monte Carlo por proyecto activo — fechas P50/P85 y probabilidad de entrega a tiempo.' },
       investment: { title: 'Inversión de Ingeniería', subtitle: '¿En qué gastamos la capacidad? Valor nuevo vs. mantenimiento, deuda técnica e incidentes.' },
@@ -567,7 +570,17 @@ export const es = {
       interest: 'Interés',
       assessments: 'Skills por persona',
       addAssessment: 'Cargar skill',
+      skillRequired: 'Elegí o ingresá una skill.',
+      newSkillOption: '➕ Crear nueva skill…',
+      newSkillPlaceholder: 'Nombre de la skill (ej. Rust)',
       categories: { language: 'lenguaje', framework: 'framework', platform: 'plataforma', domain: 'dominio', soft: 'blanda', tooling: 'herramientas' },
+    },
+
+    skillCatalog: {
+      add: 'Nueva skill',
+      total: 'Skills en el catálogo',
+      categories: 'Categorías usadas',
+      name: 'Skill',
     },
 
     okrs: {
@@ -587,6 +600,11 @@ export const es = {
       firstKrPh: 'ej. Alcanzar 99.9% de uptime',
       current: 'Actual',
       confidenceLabel: 'Confianza',
+      confidenceHelp: 'Qué tan probable es que cumplas el objetivo (0–100). Es el juicio del dueño, distinto del progreso medido. 70+ = en rumbo · 45–69 = en riesgo · menos de 45 = fuera de rumbo.',
+      keyResult: 'Key result',
+      addKr: 'Agregar key result',
+      editKr: 'Editar key result',
+      progressHint: 'El progreso (%) se calcula a partir de Actual / Objetivo.',
       statuses: { on_track: 'en rumbo', at_risk: 'en riesgo', off_track: 'fuera de rumbo', achieved: 'logrado' },
     },
 

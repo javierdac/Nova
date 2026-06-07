@@ -7,8 +7,10 @@ import type {
   CandidateDto,
   CreatePositionDto,
   CreateSkillDto,
+  CreateSkillCatalogDto,
   UpdatePositionDto,
   UpdateSkillDto,
+  UpdateSkillCatalogDto,
 } from './org.dto.js';
 
 export const orgController = {
@@ -33,6 +35,15 @@ export const orgController = {
     return noContent(res);
   }),
   skillsMatrix: asyncHandler(async (_req: Request, res: Response) => ok(res, await orgService.skillsMatrix())),
+
+  // Skill catalog
+  listSkillCatalog: asyncHandler(async (req, res: Response) => paginated(res, await orgService.listSkillCatalog(validatedQuery(req)))),
+  createSkillCatalog: asyncHandler(async (req: Request, res: Response) => created(res, await orgService.createSkillCatalog(req.body as CreateSkillCatalogDto))),
+  updateSkillCatalog: asyncHandler(async (req: Request, res: Response) => ok(res, await orgService.updateSkillCatalog(req.params.id, req.body as UpdateSkillCatalogDto))),
+  removeSkillCatalog: asyncHandler(async (req: Request, res: Response) => {
+    await orgService.removeSkillCatalog(req.params.id);
+    return noContent(res);
+  }),
 
   // Org chart & retention
   chart: asyncHandler(async (_req: Request, res: Response) => ok(res, await orgService.orgChart())),

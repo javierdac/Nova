@@ -25,6 +25,7 @@ const Engagement = lazy(() => import('@/pages/Engagement'));
 const PeopleDashboard = lazy(() => import('@/pages/org/PeopleDashboard'));
 const Headcount = lazy(() => import('@/pages/org/Headcount'));
 const SkillsMatrix = lazy(() => import('@/pages/org/SkillsMatrix'));
+const SkillCatalog = lazy(() => import('@/pages/org/SkillCatalog'));
 const Retention = lazy(() => import('@/pages/org/Retention'));
 
 // Delivery (OKRs & forecast) module
@@ -71,6 +72,7 @@ const router = createBrowserRouter([
           { path: '/org', element: <PeopleDashboard /> },
           { path: '/org/headcount', element: <Headcount /> },
           { path: '/org/skills', element: <SkillsMatrix /> },
+          { path: '/org/skill-catalog', element: <SkillCatalog /> },
           { path: '/org/retention', element: <Retention /> },
           { path: '/org/engagement', element: <Engagement /> },
           // Delivery

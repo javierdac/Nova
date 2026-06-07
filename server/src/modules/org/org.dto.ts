@@ -36,6 +36,16 @@ export const createSkillSchema = z.object({
 
 export const updateSkillSchema = createSkillSchema.partial();
 
+const skillCategory = z.enum(['language', 'framework', 'platform', 'domain', 'soft', 'tooling']);
+
+export const createSkillCatalogSchema = z.object({
+  name: z.string().min(1).max(80),
+  category: skillCategory.optional(),
+  description: z.string().max(280).optional(),
+});
+
+export const updateSkillCatalogSchema = createSkillCatalogSchema.partial();
+
 export const idParamSchema = z.object({ id: objectId });
 
 export type CreatePositionDto = z.infer<typeof createPositionSchema>;
@@ -43,3 +53,5 @@ export type UpdatePositionDto = z.infer<typeof updatePositionSchema>;
 export type CandidateDto = z.infer<typeof candidateSchema>;
 export type CreateSkillDto = z.infer<typeof createSkillSchema>;
 export type UpdateSkillDto = z.infer<typeof updateSkillSchema>;
+export type CreateSkillCatalogDto = z.infer<typeof createSkillCatalogSchema>;
+export type UpdateSkillCatalogDto = z.infer<typeof updateSkillCatalogSchema>;

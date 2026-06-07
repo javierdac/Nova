@@ -5,13 +5,16 @@ import { UserModel } from '../users/user.model.js';
 import { TeamModel } from '../teams/team.model.js';
 import { PositionModel } from './position.model.js';
 import { SkillModel } from './skill.model.js';
-import { positionRepository, skillRepository } from './org.repository.js';
+import { SkillCatalogModel } from './skillCatalog.model.js';
+import { positionRepository, skillRepository, skillCatalogRepository } from './org.repository.js';
 import type {
   CandidateDto,
   CreatePositionDto,
   CreateSkillDto,
+  CreateSkillCatalogDto,
   UpdatePositionDto,
   UpdateSkillDto,
+  UpdateSkillCatalogDto,
 } from './org.dto.js';
 
 const OPEN_STATUSES = ['planned', 'open', 'interviewing', 'offer'];
@@ -206,6 +209,27 @@ class OrgService {
 
   async removeSkill(id: string) {
     if (!(await skillRepository.deleteById(id))) throw new NotFoundError('Skill');
+  }
+
+  /* ── Skill catalog (org-wide skill definitions) ──────── */
+  listSkillCatalog(rawQuery: Record<string, unknown>) {
+    const query = parseListQuery(rawQuery, { defaultSort: 'name', allowedFilters: ['category'] });
+    return skillCatalogRepository.paginate(query);
+  }
+
+  async createSkillCatalog(dto: CreateSkillCatalogDto) {
+    const doc = await SkillCatalogModel.create(dto);
+    return doc.toObject();
+  }
+
+  async updateSkillCatalog(id: string, dto: UpdateSkillCatalogDto) {
+    const updated = await skillCatalogRepository.updateById(id, dto);
+    if (!updated) throw new NotFoundError('SkillCatalog');
+    return updated;
+  }
+
+  async removeSkillCatalog(id: string) {
+    if (!(await skillCatalogRepository.deleteById(id))) throw new NotFoundError('SkillCatalog');
   }
 
   /** Capability heatmap by skill + bus-factor risk (skills with <=1 expert at level >= 4). */

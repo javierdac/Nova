@@ -192,6 +192,13 @@ export interface Skill {
   interest: number;
 }
 
+export interface SkillCatalogItem {
+  _id: string;
+  name: string;
+  category: string;
+  description?: string;
+}
+
 export interface Headcount {
   byTeam: Array<{ teamId: string; team: string; actual: number; open: number; planned: number; openBudgetMonthly: number }>;
   totals: { actual: number; open: number; openBudgetMonthly: number };

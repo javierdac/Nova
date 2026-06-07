@@ -8,12 +8,12 @@ import {
   LineChart,
   Pie,
   PieChart,
-  ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { ChartResponsive } from '@/components/charts/ChartResponsive';
 
 const axis = { stroke: 'hsl(var(--muted-foreground))', fontSize: 11 };
 const grid = 'hsl(var(--border))';
@@ -29,9 +29,7 @@ export function FinChartCard({ title, children, action }: { title: string; child
         {action}
       </CardHeader>
       <CardContent className="pt-2">
-        {/* Fixed pixel height (width stays responsive) — avoids recharts rendering
-            a blank chart when a % height resolves to 0 on first mount. */}
-        <ResponsiveContainer width="100%" height={224}>{children as React.ReactElement}</ResponsiveContainer>
+        <ChartResponsive height={224}>{children as React.ReactElement}</ChartResponsive>
       </CardContent>
     </Card>
   );

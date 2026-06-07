@@ -278,9 +278,15 @@ Mounted at `/org`. Models `Position` (embeds `pipeline` candidates) and `Skill`.
 `pipeline[]` (candidates: `{ name, stage: applied|screen|onsite|offer|hired|rejected, appliedAt, note }`),
 `notes`.
 
-**Skill fields**: `user` → User, `skill`, `category`
+**Skill fields** (per-person assessment): `user` → User, `skill`, `category`
 (`language|framework|platform|domain|soft|tooling`), `level` (1–5), `interest` (1–5).
 Unique index on `(user, skill)`.
+
+**SkillCatalog fields** (org-wide skill definition, model `SkillCatalog`):
+`name` (unique), `category` (same enum), `description?`. Skill names on
+assessments are chosen from this catalog (with quick-add on the Skills Matrix
+form); the catalog itself is managed on its own page (`/org/skill-catalog`). It
+exists to avoid duplicate/typo'd names (e.g. `Node` vs `Node.js`).
 
 | Method | Path | Min role |
 | --- | --- | --- |
@@ -296,6 +302,10 @@ Unique index on `(user, skill)`.
 | POST | `/org/skills` | engineering_manager |
 | PATCH | `/org/skills/:id` | engineering_manager |
 | DELETE | `/org/skills/:id` | engineering_manager |
+| GET | `/org/skill-catalog` | any (org-wide skill definitions) |
+| POST | `/org/skill-catalog` | engineering_manager |
+| PATCH | `/org/skill-catalog/:id` | engineering_manager |
+| DELETE | `/org/skill-catalog/:id` | head_of_engineering |
 
 `skills/matrix` aggregates per-skill `people`, `experts`, `avgLevel`, and
 bus-factor risk (≤1 expert at level ≥ 4).
@@ -483,7 +493,8 @@ lazy chunk. "Entry" = whether the screen can create/edit its source data.
 | `/settings` | Settings | `/auth/me` | ✅ account |
 | `/org` | PeopleDashboard | `/org/headcount`,`chart` (derived) | — derived |
 | `/org/headcount` | Headcount | `/org/headcount`,`positions`,`funnel` | ✅ positions, **candidates** |
-| `/org/skills` | SkillsMatrix | `/org/skills/matrix`,`/org/skills` | ✅ **skill assessments** |
+| `/org/skills` | SkillsMatrix | `/org/skills/matrix`,`/org/skills`,`/org/skill-catalog` | ✅ **skill assessments** (skill picked from catalog) |
+| `/org/skill-catalog` | SkillCatalog | `/org/skill-catalog` | ✅ **skill definitions** |
 | `/org/retention` | Retention | `/org/attrition-risk` (derived) | — derived |
 | `/org/engagement` | Engagement | `engagement/summary` | ✅ **pulse responses (eNPS)** |
 | `/okrs` | OKRsBoard | `/okrs`,`/okrs/rollup` | ✅ objectives, KRs |
@@ -538,7 +549,8 @@ views are exempt because their inputs are enterable.**
 | Users, teams, projects, incidents, tech debt, architecture, 1:1s | manual | their pages |
 | OKRs (objectives, KRs) | manual | `/okrs` |
 | Positions & hiring candidates | manual | `/org/headcount` |
-| Skill assessments (per user, level/interest) | manual | `/org/skills` |
+| Skill catalog (org-wide skill definitions) | manual | `/org/skill-catalog` |
+| Skill assessments (per user, level/interest) | manual | `/org/skills` (skill name from the catalog) |
 | All 9 finance cost ledgers | manual | their `/finance/*` pages |
 | Engagement pulse responses (eNPS) | manual | `/org/engagement` |
 | DORA metric snapshots (deploys, lead time, CFR, MTTR) | **integration** | GitHub sync (`/integrations`) |
@@ -570,7 +582,8 @@ the same collections, so run whichever language you want to demo:
 | `npm run seed:en -w server` | `server/src/seed.en.ts` | same shape, content in **English** |
 
 Both seed an org of teams/users, projects, incidents, tech debt, architecture,
-OKRs (`2026-Q2`), 1:1s, positions, skills and 90 days of `MetricSnapshot`
+OKRs (`2026-Q2`), 1:1s, positions, the skill catalog (TypeScript, Go, React, …),
+skill assessments and 90 days of `MetricSnapshot`
 history, then call `seedFinance(...)` (in `finance.seed.ts`) for every finance
 cost ledger. The two scripts are intentionally structural mirrors — only the
 human-readable strings differ (titles, missions, descriptions, project/incident
@@ -621,6 +634,14 @@ add a page → update the [frontend reference](#frontend-reference) and
 
 ### Changelog
 
+- **2026-06-07** — Added a **Skill Catalog**: a new `SkillCatalog` model
+  (org-wide skill definitions: name/category/description) with CRUD under
+  `/org/skill-catalog`, a dedicated sidebar page (`/org/skill-catalog`,
+  `SkillCatalog.tsx`) and seed entries in both locales. The Skills Matrix
+  assessment form now picks the skill from this catalog (with quick-add for new
+  ones) and carries a `SourceNotice` linking to the catalog. New i18n keys
+  (`nav.skillCatalog`, `pages.skillCatalog`, `skillCatalog.*`, `sourceNotice.skills`,
+  `skills.newSkill*`). Documented model/endpoints/provenance/frontend tables.
 - **2026-06-07** — Added an English seed variant (`server/src/seed.en.ts`, run
   with `npm run seed:en`) that coexists with the Spanish `seed.ts` — a
   structural mirror with English content. Parameterized `finance.seed.ts` with a

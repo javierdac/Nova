@@ -16,6 +16,7 @@ import { OneOnOneModel } from './modules/oneOnOnes/oneOnOne.model.js';
 import { MetricSnapshotModel } from './modules/metrics/metric.model.js';
 import { PositionModel } from './modules/org/position.model.js';
 import { SkillModel } from './modules/org/skill.model.js';
+import { SkillCatalogModel } from './modules/org/skillCatalog.model.js';
 import { ObjectiveModel } from './modules/okrs/objective.model.js';
 import { PulseResponseModel } from './modules/engagement/pulse.model.js';
 import { seedFinance } from './modules/finance/finance.seed.js';
@@ -38,6 +39,7 @@ async function seed() {
     MetricSnapshotModel.deleteMany({}),
     PositionModel.deleteMany({}),
     SkillModel.deleteMany({}),
+    SkillCatalogModel.deleteMany({}),
     ObjectiveModel.deleteMany({}),
     PulseResponseModel.deleteMany({}),
   ]);
@@ -49,23 +51,23 @@ async function seed() {
   const javier = await mk({ name: 'Javier Daccorso', email: 'Javier.Daccorso@transformco.com', role: 'engineering_manager', title: 'Engineering Manager', seniority: 'staff', manager: admin._id });
 
   // Leadership / shared roles report to Javier.
-  const santiago = await mk({ name: 'Santiago Nivelo', email: 'santiago.nivelo@nova.dev', role: 'engineering_manager', title: 'Líder Técnico', seniority: 'staff', manager: javier._id });
-  const carlos = await mk({ name: 'Carlos Torrez', email: 'carlos.torrez@nova.dev', role: 'engineering_manager', title: 'Líder Técnico', seniority: 'staff', manager: javier._id });
-  const abhinav = await mk({ name: 'Abhinav Penmetsa', email: 'abhinav.penmetsa@nova.dev', role: 'engineer', title: 'Dueño de Producto', seniority: 'senior', manager: javier._id });
-  const kuljit = await mk({ name: 'Kuljit Kandhola', email: 'kuljit.kandhola@nova.dev', role: 'engineer', title: 'Arquitecto', seniority: 'principal', manager: javier._id });
+  const santiago = await mk({ name: 'Mateo Aguirre', email: 'mateo.aguirre@nova.dev', role: 'engineering_manager', title: 'Líder Técnico', seniority: 'staff', manager: javier._id });
+  const carlos = await mk({ name: 'Tomás Bianchi', email: 'tomas.bianchi@nova.dev', role: 'engineering_manager', title: 'Líder Técnico', seniority: 'staff', manager: javier._id });
+  const abhinav = await mk({ name: 'Lucas Ferreyra', email: 'lucas.ferreyra@nova.dev', role: 'engineer', title: 'Dueño de Producto', seniority: 'senior', manager: javier._id });
+  const kuljit = await mk({ name: 'Diego Maldonado', email: 'diego.maldonado@nova.dev', role: 'engineer', title: 'Arquitecto', seniority: 'principal', manager: javier._id });
 
-  // Squad Alpha engineers report to Santiago.
-  const romerd = await mk({ name: 'Romerd Garcia', email: 'romerd.garcia@nova.dev', role: 'engineer', title: 'Ingeniero de Software', seniority: 'senior', manager: santiago._id });
-  const victor = await mk({ name: 'Victor Morais', email: 'victor.morais@nova.dev', role: 'engineer', title: 'Ingeniero de Software', seniority: 'mid', manager: santiago._id });
-  const daniel = await mk({ name: 'Daniel Arias', email: 'daniel.arias@nova.dev', role: 'engineer', title: 'Ingeniero de Software', seniority: 'mid', manager: santiago._id });
-  const pratik = await mk({ name: 'Pratik Tamhane', email: 'pratik.tamhane@nova.dev', role: 'engineer', title: 'Ingeniero de Software', seniority: 'junior', manager: santiago._id });
-  const cervi = await mk({ name: 'Henrique Cervi', email: 'henrique.cervi@nova.dev', role: 'engineer', title: 'Ingeniero QA', seniority: 'mid', manager: santiago._id });
+  // Squad Alpha engineers report to Mateo.
+  const romerd = await mk({ name: 'Joaquín Herrera', email: 'joaquin.herrera@nova.dev', role: 'engineer', title: 'Ingeniero de Software', seniority: 'senior', manager: santiago._id });
+  const victor = await mk({ name: 'Nicolás Vega', email: 'nicolas.vega@nova.dev', role: 'engineer', title: 'Ingeniero de Software', seniority: 'mid', manager: santiago._id });
+  const daniel = await mk({ name: 'Bruno Ledesma', email: 'bruno.ledesma@nova.dev', role: 'engineer', title: 'Ingeniero de Software', seniority: 'mid', manager: santiago._id });
+  const pratik = await mk({ name: 'Emilio Sosa', email: 'emilio.sosa@nova.dev', role: 'engineer', title: 'Ingeniero de Software', seniority: 'junior', manager: santiago._id });
+  const cervi = await mk({ name: 'Facundo Ríos', email: 'facundo.rios@nova.dev', role: 'engineer', title: 'Ingeniero QA', seniority: 'mid', manager: santiago._id });
 
-  // Squad Beta engineers report to Carlos.
-  const cutri = await mk({ name: 'Henrique Cutri', email: 'henrique.cutri@nova.dev', role: 'engineer', title: 'Ingeniero de Software', seniority: 'senior', manager: carlos._id });
-  const sebastian = await mk({ name: 'Sebastian Cordova Vasquez', email: 'sebastian.cordova@nova.dev', role: 'engineer', title: 'Ingeniero de Software', seniority: 'mid', manager: carlos._id });
-  const olavo = await mk({ name: 'Olavo Wilke', email: 'olavo.wilke@nova.dev', role: 'engineer', title: 'Ingeniero de Software', seniority: 'mid', manager: carlos._id });
-  const fabiano = await mk({ name: 'Fabiano Santos', email: 'fabiano.santos@nova.dev', role: 'engineer', title: 'Ingeniero de Software', seniority: 'junior', manager: carlos._id });
+  // Squad Beta engineers report to Tomás.
+  const cutri = await mk({ name: 'Agustín Molina', email: 'agustin.molina@nova.dev', role: 'engineer', title: 'Ingeniero de Software', seniority: 'senior', manager: carlos._id });
+  const sebastian = await mk({ name: 'Ramiro Paredes', email: 'ramiro.paredes@nova.dev', role: 'engineer', title: 'Ingeniero de Software', seniority: 'mid', manager: carlos._id });
+  const olavo = await mk({ name: 'Tobías Quiroga', email: 'tobias.quiroga@nova.dev', role: 'engineer', title: 'Ingeniero de Software', seniority: 'mid', manager: carlos._id });
+  const fabiano = await mk({ name: 'Gael Navarro', email: 'gael.navarro@nova.dev', role: 'engineer', title: 'Ingeniero de Software', seniority: 'junior', manager: carlos._id });
 
   /* ── Teams ─────────────────────────────────────────── */
   const alpha = await TeamModel.create({
@@ -185,6 +187,19 @@ async function seed() {
     { title: 'Engineering Manager', team: beta._id, seniority: 'staff', status: 'planned', budgetedMonthlyCost: 14000, targetStartDate: days(-90) },
   ]);
 
+  /* ── Skill catalog (org-wide skill definitions) ─────── */
+  await SkillCatalogModel.create([
+    { name: 'TypeScript', category: 'language', description: 'Lenguaje principal de backend y frontend.' },
+    { name: 'Go', category: 'language', description: 'Servicios de plataforma de alto rendimiento.' },
+    { name: 'React', category: 'framework', description: 'Framework de UI para las apps de cara al cliente.' },
+    { name: 'Node.js', category: 'platform', description: 'Runtime de los servicios de backend.' },
+    { name: 'PostgreSQL', category: 'platform', description: 'Base de datos relacional primaria.' },
+    { name: 'Kubernetes', category: 'platform', description: 'Orquestación de contenedores.' },
+    { name: 'AWS', category: 'platform', description: 'Proveedor cloud principal.' },
+    { name: 'Diseño de Sistemas', category: 'domain', description: 'Arquitectura de sistemas distribuidos.' },
+    { name: 'Automatización de Pruebas', category: 'tooling', description: 'Frameworks de testing automatizado.' },
+  ]);
+
   /* ── Skills matrix (note the single-expert bus factors) ── */
   await SkillModel.create([
     { user: kuljit._id, skill: 'Kubernetes', category: 'platform', level: 5, interest: 4 },
@@ -245,7 +260,7 @@ async function seed() {
   await OneOnOneModel.create([
     {
       manager: javier._id, report: santiago._id, date: days(6), mood: 'good',
-      notes: 'Revisamos el push de fiabilidad de Squad Alpha. Santiago está motivado pero sobrecargado entre la guardia y MRF.',
+      notes: 'Revisamos el push de fiabilidad de Squad Alpha. Mateo está motivado pero sobrecargado entre la guardia y MRF.',
       privateNotes: 'Fuerte candidato a promoción a EM en 2 trimestres. Atención al burnout por la guardia.',
       feedback: { strengths: 'Excelente liderazgo técnico y calma en los incidentes.', improvements: 'Delegar más la rotación de guardia para hacer crecer al equipo.' },
       careerGrowth: { currentLevel: 'Staff / Tech Lead', targetLevel: 'Engineering Manager', plan: 'Acompañar a Javier en las rondas de contratación y la planificación trimestral. Liderar el próximo postmortem de punta a punta.' },
@@ -256,13 +271,13 @@ async function seed() {
       actionItems: [
         { title: 'Redactar la propuesta de rotación de guardia', owner: 'report', done: true },
         { title: 'Compartir el risk register de MRF con Javier', owner: 'report', done: false },
-        { title: 'Agendar skip-level con Romerd', owner: 'manager', done: false },
+        { title: 'Agendar skip-level con Joaquín', owner: 'manager', done: false },
       ],
       nextMeetingDate: days(-8),
     },
     {
       manager: javier._id, report: carlos._id, date: days(5), mood: 'neutral',
-      notes: 'El timeline de Billing v2 está ajustado. A Carlos le preocupa la moral de Squad Beta y la carga de guardia.',
+      notes: 'El timeline de Billing v2 está ajustado. A Tomás le preocupa la moral de Squad Beta y la carga de guardia.',
       privateNotes: 'La moral de Beta está bajando — atención a las señales de rotación.',
       feedback: { strengths: 'Gran sentido de producto y comunicación con stakeholders.', improvements: 'Plantear objeciones más temprano ante deadlines poco realistas.' },
       careerGrowth: { currentLevel: 'Staff / Tech Lead', targetLevel: 'Senior Staff', plan: 'Ser dueño del architecture review de Billing v2 y mentorear a dos ingenieros semi-senior.' },
@@ -278,7 +293,7 @@ async function seed() {
     },
     {
       manager: santiago._id, report: romerd._id, date: days(3), mood: 'great',
-      notes: 'Romerd la está rompiendo con la remoción del auth shim. Listo para más ownership arquitectónico.',
+      notes: 'Joaquín la está rompiendo con la remoción del auth shim. Listo para más ownership arquitectónico.',
       feedback: { strengths: 'Profundo expertise en backend, entrega confiable.', improvements: 'Documentar más las decisiones para el equipo.' },
       careerGrowth: { currentLevel: 'Senior', targetLevel: 'Staff', plan: 'Liderar la migración a configuración tipada como iniciativa de nivel staff.' },
       goals: [{ title: 'Remover el shim de auth legacy', category: 'project', status: 'in_progress' }],
@@ -287,13 +302,13 @@ async function seed() {
     },
     {
       manager: carlos._id, report: olavo._id, date: days(2), mood: 'concerned',
-      notes: 'Olavo se siente sobrecargado con el trabajo de front-end y sin claridad sobre su camino de crecimiento.',
+      notes: 'Tobías se siente sobrecargado con el trabajo de front-end y sin claridad sobre su camino de crecimiento.',
       privateNotes: 'Riesgo de fuga — abordar el plan de crecimiento y la carga este mes.',
       feedback: { strengths: 'Sólidas skills de React, buen ojo para UX.', improvements: 'Comunicar los bloqueos antes.' },
       careerGrowth: { currentLevel: 'Mid', targetLevel: 'Senior', plan: 'Definir un checklist claro de track senior y hacer pairing en diseño de sistemas.' },
       goals: [{ title: 'Ser dueño de la librería de componentes del sistema de diseño', category: 'skill', status: 'not_started' }],
       actionItems: [
-        { title: 'Rebalancear la carga de Olavo', owner: 'manager', done: false },
+        { title: 'Rebalancear la carga de Tobías', owner: 'manager', done: false },
         { title: 'Redactar el checklist de track senior', owner: 'manager', done: false },
       ],
       nextMeetingDate: days(-5),

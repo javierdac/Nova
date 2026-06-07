@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { AlertTriangle, GraduationCap, Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { useSkillsMatrix, useSkills, useSkillMutations } from '@/api/org';
+import { useSkillsMatrix, useSkills, useSkillMutations, useSkillCatalog, useSkillCatalogMutations } from '@/api/org';
 import { useUsers } from '@/api/hooks';
 import type { Skill } from '@/types';
 import { PageHeader } from '@/components/shared/PageHeader';
+import { SourceNotice } from '@/components/shared/SourceNotice';
 import { StatCard } from '@/components/shared/StatCard';
 import { LoadingState, ErrorState, EmptyState } from '@/components/shared/States';
 import { Pagination } from '@/components/shared/Toolbar';
@@ -44,24 +45,45 @@ export default function SkillsMatrix() {
   const { create, update, remove } = useSkillMutations();
   const del = useRowDelete(remove);
 
+  // Skill names are chosen from the org-wide catalog (managed on its own page).
+  const catalog = useSkillCatalog({ limit: 200, sort: 'name' });
+  const catalogItems = catalog.data?.data ?? [];
+  const catalogByName = new Map(catalogItems.map((c) => [c.name, c]));
+  const { create: createCatalog } = useSkillCatalogMutations();
+
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Skill | null>(null);
   const [formError, setFormError] = useState('');
   const [form, setForm] = useState(EMPTY);
+  const [newSkill, setNewSkill] = useState(false); // quick-add a skill not yet in the catalog
 
-  const openCreate = () => { setEditing(null); setForm(EMPTY); setFormError(''); setOpen(true); };
+  const openCreate = () => { setEditing(null); setForm(EMPTY); setNewSkill(false); setFormError(''); setOpen(true); };
   const openEdit = (s: Skill) => {
     setEditing(s);
     setForm({ user: s.user, skill: s.skill, category: s.category, level: s.level, interest: s.interest });
+    setNewSkill(false);
     setFormError('');
     setOpen(true);
+  };
+
+  // Picking a catalog skill also adopts its category; '__new__' switches to quick-add.
+  const onSkillSelect = (value: string) => {
+    if (value === '__new__') { setNewSkill(true); setForm((f) => ({ ...f, skill: '' })); return; }
+    const item = catalogByName.get(value);
+    setForm((f) => ({ ...f, skill: value, category: item?.category ?? f.category }));
   };
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormError('');
-    const body = { ...form, level: Number(form.level), interest: Number(form.interest) };
+    const skillName = form.skill.trim();
+    if (!skillName) { setFormError(t('skills.skillRequired')); return; }
+    const body = { ...form, skill: skillName, level: Number(form.level), interest: Number(form.interest) };
     try {
+      // Quick-add: register the skill in the catalog first if it's new.
+      if (newSkill && !catalogByName.has(skillName)) {
+        await createCatalog.mutateAsync({ name: skillName, category: form.category });
+      }
       if (editing) await update.mutateAsync({ id: editing._id, body });
       else await create.mutateAsync(body);
       setOpen(false);
@@ -80,6 +102,8 @@ export default function SkillsMatrix() {
         subtitle={t('pages.skills.subtitle')}
         action={<Button onClick={openCreate}><Plus className="h-4 w-4" /> {t('skills.addAssessment')}</Button>}
       />
+
+      <SourceNotice message={t('sourceNotice.skills')} links={[{ to: '/org/skill-catalog', label: t('nav.skillCatalog') }]} />
 
       {data?.skills.length ? (
         <>
@@ -152,8 +176,20 @@ export default function SkillsMatrix() {
             </Select>
           </div>
           <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1.5"><Label>{t('skills.skill')}</Label><Input value={form.skill} onChange={(e) => setForm({ ...form, skill: e.target.value })} required /></div>
-            <div className="space-y-1.5"><Label>{t('common.category')}</Label><Select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}>{CATEGORIES.map((c) => <option key={c} value={c}>{t(`skills.categories.${c}`, c)}</option>)}</Select></div>
+            <div className="space-y-1.5">
+              <Label>{t('skills.skill')}</Label>
+              {newSkill ? (
+                <Input value={form.skill} onChange={(e) => setForm({ ...form, skill: e.target.value })} placeholder={t('skills.newSkillPlaceholder')} autoFocus required />
+              ) : (
+                <Select value={catalogByName.has(form.skill) || !form.skill ? form.skill : '__legacy__'} onChange={(e) => onSkillSelect(e.target.value)} required>
+                  <option value="">—</option>
+                  {form.skill && !catalogByName.has(form.skill) && <option value="__legacy__">{form.skill}</option>}
+                  {catalogItems.map((c) => <option key={c._id} value={c.name}>{c.name}</option>)}
+                  <option value="__new__">{t('skills.newSkillOption')}</option>
+                </Select>
+              )}
+            </div>
+            <div className="space-y-1.5"><Label>{t('common.category')}</Label><Select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} disabled={!newSkill && catalogByName.has(form.skill)}>{CATEGORIES.map((c) => <option key={c} value={c}>{t(`skills.categories.${c}`, c)}</option>)}</Select></div>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5"><Label>{t('skills.level')}</Label><Select value={form.level} onChange={(e) => setForm({ ...form, level: Number(e.target.value) })}>{LEVELS.map((l) => <option key={l} value={l}>{l}</option>)}</Select></div>

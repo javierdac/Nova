@@ -26,7 +26,7 @@ that, see [`README.md`](../README.md), [`ARCHITECTURE.md`](ARCHITECTURE.md) and
 
 **Part 2 — Screen by screen**
 - [Top group](#top-group): [Dashboard](#dashboard) · [Weekly Brief](#weekly-brief) · [Scorecard](#scorecard) · [Teams](#teams) · [Users](#users) · [Projects](#projects) · [Incidents](#incidents) · [Technical Debt](#technical-debt) · [Architecture](#architecture) · [One-on-Ones](#one-on-ones)
-- [People & Org](#people--org): [Org Overview](#org-overview) · [Headcount & Hiring](#headcount--hiring) · [Skills Matrix](#skills-matrix) · [Retention Risk](#retention-risk) · [Engagement (eNPS)](#engagement-enps)
+- [People & Org](#people--org): [Org Overview](#org-overview) · [Headcount & Hiring](#headcount--hiring) · [Skills Matrix](#skills-matrix) · [Skill Catalog](#skill-catalog) · [Retention Risk](#retention-risk) · [Engagement (eNPS)](#engagement-enps)
 - [Delivery](#delivery): [OKRs](#okrs) · [Delivery Forecast](#delivery-forecast) · [Engineering Investment](#engineering-investment)
 - [Finance](#finance): [Finance Dashboard](#finance-dashboard) · [Cloud Costs](#cloud-costs) · [SaaS Costs](#saas-costs) · [Team Costs](#team-costs) · [Product Costs](#product-costs) · [Tech Debt Costs](#tech-debt-costs) · [Incident Costs](#incident-costs) · [Cost of Delay](#cost-of-delay) · [Hiring ROI](#hiring-roi) · [AI Cost Advisor](#ai-cost-advisor) · [Executive Reports](#executive-reports)
 - [Integrations](#integrations) · [Settings](#settings)
@@ -79,7 +79,7 @@ Incidents
 Technical Debt
 Architecture
 One-on-Ones
-▸ People & Org   → Org Overview · Headcount & Hiring · Skills Matrix · Retention Risk · Engagement (eNPS)
+▸ People & Org   → Org Overview · Headcount & Hiring · Skills Matrix · Skill Catalog · Retention Risk · Engagement (eNPS)
 ▸ Delivery       → OKRs · Delivery Forecast · Engineering Investment
 ▸ Finance        → Finance Dashboard · Cloud · SaaS · Team · Product · Tech Debt · Incident costs · Cost of Delay · Hiring ROI · AI Cost Advisor · Executive Reports
 Integrations
@@ -303,11 +303,27 @@ integration** — nothing is invented. There are three kinds of screen:
   average level, risk badge); and below it, the **Skills by person** table.
 - **What you can do** (Engineering Manager+):
   - **Add skill** (top-right button) — record a person's skill: choose the
-    **person**, type the **skill**, pick a **category**, and set **level (1–5)**
-    and **interest (1–5)**.
+    **person**, pick the **skill** from the catalog dropdown (or **➕ Create new
+    skill…** to add one on the spot), and set **level (1–5)** and **interest
+    (1–5)**. The **category** is taken from the catalog automatically.
   - **Edit / delete** any entry in the *Skills by person* table.
   - Adding skills updates the heatmap and recalculates bus-factor risk.
-- **Data source:** entered here. *(This is the place to load skills.)*
+- **Data source:** assessments are entered here; the skill names come from the
+  **Skill Catalog** (link shown in the notice at the top).
+
+### Skill Catalog
+**Menu:** People & Org ▸ Skill Catalog · **For:** defining the org-wide list of
+skills (e.g. TypeScript, Go) that assessments are picked from.
+
+- **What you see:** cards for total skills and categories used, plus a table of
+  every catalog skill with its category and description.
+- **What you can do** (Engineering Manager+):
+  - **New skill** (top-right button) — add a skill: **name**, **category** and an
+    optional **description**.
+  - **Edit / delete** any catalog entry (delete is Head of Engineering+).
+- **Data source:** entered here. *(This is the place to load skills like
+  TypeScript or Go.)* Referenced by the Skills Matrix when assigning skills to
+  people.
 
 ### Retention Risk
 **Menu:** People & Org ▸ Retention Risk · **For:** per-person flight-risk.

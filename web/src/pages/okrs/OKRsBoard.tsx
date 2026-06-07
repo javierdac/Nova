@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Plus, Target, TrendingUp, AlertTriangle } from 'lucide-react';
+import { Plus, Target, TrendingUp, AlertTriangle, Pencil } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useObjectives, useOkrRollup, useObjectiveMutations } from '@/api/okrs';
 import { useTeams } from '@/api/hooks';
@@ -11,10 +11,11 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input, Label, Select } from '@/components/ui/input';
 import { Dialog } from '@/components/ui/dialog';
+import { InfoHint } from '@/components/ui/tooltip';
 import { RowActions, ConfirmDelete, useRowDelete } from '@/components/shared/RowActions';
 import { apiError } from '@/lib/api';
 import { useCan } from '@/lib/permissions';
-import type { Objective, Team } from '@/types';
+import type { Objective, KeyResult, Team } from '@/types';
 
 const QUARTER = '2026-Q2';
 const STATUS_TONE = { on_track: 'success', at_risk: 'warning', off_track: 'danger', achieved: 'default' } as const;
@@ -35,7 +36,7 @@ export default function OKRsBoard() {
   const list = useObjectives({ quarter: QUARTER, limit: 50 });
   const rollup = useOkrRollup(QUARTER);
   const teams = useTeams({ limit: 50 });
-  const { create, update, remove } = useObjectiveMutations();
+  const { create, update, remove, addKeyResult, updateKeyResult } = useObjectiveMutations();
   const del = useRowDelete(remove);
   const canManage = useCan('engineering_manager');
   const canDelete = useCan('head_of_engineering');
@@ -44,6 +45,40 @@ export default function OKRsBoard() {
   const [editing, setEditing] = useState<Objective | null>(null);
   const [error, setError] = useState('');
   const [form, setForm] = useState(EMPTY);
+
+  // Key-result editor (update an existing KR or add a new one to an objective).
+  const KR_EMPTY = { objId: '', krId: '', title: '', targetValue: 100, currentValue: 0, confidence: 70 };
+  const [krOpen, setKrOpen] = useState(false);
+  const [krForm, setKrForm] = useState(KR_EMPTY);
+  const [krError, setKrError] = useState('');
+
+  const openKr = (objId: string, kr?: KeyResult) => {
+    setKrForm(
+      kr
+        ? { objId, krId: kr._id ?? '', title: kr.title, targetValue: kr.targetValue, currentValue: kr.currentValue ?? 0, confidence: kr.confidence ?? 70 }
+        : { ...KR_EMPTY, objId },
+    );
+    setKrError('');
+    setKrOpen(true);
+  };
+
+  const submitKr = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setKrError('');
+    const body = {
+      title: krForm.title,
+      targetValue: Number(krForm.targetValue),
+      currentValue: Number(krForm.currentValue),
+      confidence: Number(krForm.confidence),
+    };
+    try {
+      if (krForm.krId) await updateKeyResult.mutateAsync({ id: krForm.objId, krId: krForm.krId, body });
+      else await addKeyResult.mutateAsync({ id: krForm.objId, body: { ...body, metricType: 'percent', startValue: 0 } });
+      setKrOpen(false);
+    } catch (err) {
+      setKrError(apiError(err));
+    }
+  };
 
   if (list.isLoading) return <LoadingState />;
   if (list.isError) return <ErrorState message={apiError(list.error)} />;
@@ -118,14 +153,22 @@ export default function OKRsBoard() {
                   <Progress value={o.progress} />
                 </div>
                 {o.keyResults.map((kr, i) => (
-                  <div key={kr._id ?? i}>
-                    <div className="mb-1 flex justify-between text-xs">
+                  <div key={kr._id ?? i} className={canManage ? 'group/kr cursor-pointer rounded p-1 -m-1 hover:bg-muted/50' : undefined} onClick={canManage ? () => openKr(o._id, kr) : undefined}>
+                    <div className="mb-1 flex items-center justify-between text-xs">
                       <span className="truncate">{kr.title}</span>
-                      <span className="ml-2 shrink-0 text-muted-foreground">{kr.progress ?? 0}%</span>
+                      <span className="ml-2 flex shrink-0 items-center gap-1 text-muted-foreground">
+                        {kr.progress ?? 0}%
+                        {canManage && <Pencil className="h-3 w-3 opacity-40 transition-opacity group-hover/kr:opacity-100" />}
+                      </span>
                     </div>
                     <Progress value={kr.progress ?? 0} tone="bg-emerald-500" />
                   </div>
                 ))}
+                {canManage && (
+                  <button type="button" onClick={() => openKr(o._id)} className="text-xs text-muted-foreground hover:text-foreground">
+                    + {t('okrs.addKr')}
+                  </button>
+                )}
               </CardContent>
             </Card>
           ))}
@@ -154,12 +197,26 @@ export default function OKRsBoard() {
               <div className="grid grid-cols-3 gap-3">
                 <div className="space-y-1.5"><Label>{t('common.target')}</Label><Input type="number" value={form.targetValue} onChange={(e) => setForm({ ...form, targetValue: Number(e.target.value) })} /></div>
                 <div className="space-y-1.5"><Label>{t('okrs.current')}</Label><Input type="number" value={form.currentValue} onChange={(e) => setForm({ ...form, currentValue: Number(e.target.value) })} /></div>
-                <div className="space-y-1.5"><Label>{t('okrs.confidenceLabel')}</Label><Input type="number" min={0} max={100} value={form.confidence} onChange={(e) => setForm({ ...form, confidence: Number(e.target.value) })} /></div>
+                <div className="space-y-1.5"><Label>{t('okrs.confidenceLabel')} <InfoHint text={t('okrs.confidenceHelp')} /></Label><Input type="number" min={0} max={100} value={form.confidence} onChange={(e) => setForm({ ...form, confidence: Number(e.target.value) })} /></div>
               </div>
             </>
           )}
           {error && <p className="text-sm text-red-400">{error}</p>}
           <div className="flex justify-end gap-2"><Button type="button" variant="outline" onClick={() => setOpen(false)}>{t('common.cancel')}</Button><Button type="submit" disabled={create.isPending || update.isPending}>{editing ? t('common.save') : t('common.create')}</Button></div>
+        </form>
+      </Dialog>
+
+      <Dialog open={krOpen} onClose={() => setKrOpen(false)} title={krForm.krId ? t('okrs.editKr') : t('okrs.addKr')}>
+        <form onSubmit={submitKr} className="space-y-4">
+          <div className="space-y-1.5"><Label>{t('okrs.keyResult')}</Label><Input value={krForm.title} onChange={(e) => setKrForm({ ...krForm, title: e.target.value })} required /></div>
+          <div className="grid grid-cols-3 gap-3">
+            <div className="space-y-1.5"><Label>{t('common.target')}</Label><Input type="number" value={krForm.targetValue} onChange={(e) => setKrForm({ ...krForm, targetValue: Number(e.target.value) })} /></div>
+            <div className="space-y-1.5"><Label>{t('okrs.current')}</Label><Input type="number" value={krForm.currentValue} onChange={(e) => setKrForm({ ...krForm, currentValue: Number(e.target.value) })} /></div>
+            <div className="space-y-1.5"><Label>{t('okrs.confidenceLabel')} <InfoHint text={t('okrs.confidenceHelp')} /></Label><Input type="number" min={0} max={100} value={krForm.confidence} onChange={(e) => setKrForm({ ...krForm, confidence: Number(e.target.value) })} /></div>
+          </div>
+          <p className="text-xs text-muted-foreground">{t('okrs.progressHint')}</p>
+          {krError && <p className="text-sm text-red-400">{krError}</p>}
+          <div className="flex justify-end gap-2"><Button type="button" variant="outline" onClick={() => setKrOpen(false)}>{t('common.cancel')}</Button><Button type="submit" disabled={addKeyResult.isPending || updateKeyResult.isPending}>{t('common.save')}</Button></div>
         </form>
       </Dialog>
 
