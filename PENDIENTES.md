@@ -26,10 +26,11 @@ reales solo cuando se implementen los providers `live` y el ingreso automático 
 Hoy cada conector tiene un provider `dummy` (funciona) y uno `live` que **lanza error**
 (`"... live provider not configured yet"`). El sync es **manual** (botón), no automático.
 
-- [ ] 🔴 **Implementar los 4 providers `live`** (hoy son stubs):
+- [ ] 🔴 **Implementar los providers `live`** (los marcados ✅ ya están):
   - `server/src/integrations/providers/github.provider.ts` → GitHub REST/GraphQL (deploys, PRs).
   - `server/src/integrations/providers/jira.provider.ts` → Jira REST (JQL search).
-  - `server/src/integrations/providers/pagerduty.provider.ts` → PagerDuty REST (`GET /incidents`).
+  - ✅ `server/src/integrations/providers/pagerduty.provider.ts` → PagerDuty REST (`GET /incidents`),
+    auth por `PAGERDUTY_API_TOKEN`, paginado, ventana 90d. Falta: cursor incremental.
   - `server/src/integrations/providers/cloud.provider.ts` → AWS Cost Explorer / GCP Billing export.
 - [ ] 🔴 **Webhooks en tiempo real** (`POST /webhooks/:provider`): documentados en
   `docs/INTEGRATIONS.md` pero **no existen en código** (solo está `POST /:provider/sync` manual).

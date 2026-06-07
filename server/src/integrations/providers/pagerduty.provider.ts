@@ -81,9 +81,96 @@ export interface PagerDutyProvider {
   fetchIncidents(integration: IntegrationDoc): Promise<PagerDutyIncident[]>;
 }
 
-/** Live provider stub — implement with the PagerDuty REST API (GET /incidents). */
+const PD_API = 'https://api.pagerduty.com';
+const LOOKBACK_DAYS = 90; // ventana de pull (sin cursor incremental todavía)
+const PAGE_LIMIT = 100; // máximo que permite PagerDuty por página
+const MAX_PAGES = 5; // tope de seguridad → hasta 500 incidentes por sync
+
+/** Shape parcial del incidente que devuelve la REST API v2 de PagerDuty. */
+interface PagerDutyApiIncident {
+  id: string;
+  title: string;
+  description?: string;
+  status: 'triggered' | 'acknowledged' | 'resolved';
+  urgency: 'high' | 'low';
+  created_at: string;
+  last_status_change_at?: string;
+  html_url: string;
+  service?: { summary?: string };
+  priority?: { summary?: string } | null;
+}
+
+/** Prioridad configurada (P1..P5) o, si no hay, la urgencia → severidad de Nova. */
+function severityFrom(inc: PagerDutyApiIncident): PagerDutyIncident['urgency'] {
+  const p = inc.priority?.summary?.toUpperCase() ?? '';
+  if (p.includes('P1')) return 'critical';
+  if (p.includes('P2')) return 'high';
+  if (p.includes('P3')) return 'low';
+  if (p.includes('P4') || p.includes('P5')) return 'info';
+  return inc.urgency === 'high' ? 'high' : 'low';
+}
+
+/** Token desde la config de la integración (futuro: cifrada) o desde env. */
+function resolveToken(integration: IntegrationDoc): string | undefined {
+  const cfg = (integration.config ?? {}) as { apiToken?: string };
+  return cfg.apiToken || env.PAGERDUTY_API_TOKEN;
+}
+
+/**
+ * Live provider: PagerDuty REST API (GET /incidents).
+ * Auth con API token (`Authorization: Token token=<KEY>`), paginado, ventana de
+ * 90 días. Devuelve la misma forma que el dummy, así el connector no cambia.
+ */
 export const livePagerDutyProvider: PagerDutyProvider = {
-  async fetchIncidents() {
-    throw new Error('PagerDuty live provider not configured yet. Set credentials and implement fetchIncidents().');
+  async fetchIncidents(integration) {
+    const token = resolveToken(integration);
+    if (!token) {
+      throw new Error('Falta PAGERDUTY_API_TOKEN. Configurá la credencial para usar el modo live.');
+    }
+
+    const since = new Date(Date.now() - LOOKBACK_DAYS * 864e5).toISOString();
+    const out: PagerDutyIncident[] = [];
+
+    for (let page = 0; page < MAX_PAGES; page++) {
+      const params = new URLSearchParams({
+        since,
+        limit: String(PAGE_LIMIT),
+        offset: String(page * PAGE_LIMIT),
+        sort_by: 'created_at:desc',
+        time_zone: 'UTC',
+      });
+      for (const s of ['triggered', 'acknowledged', 'resolved']) params.append('statuses[]', s);
+
+      const res = await fetch(`${PD_API}/incidents?${params.toString()}`, {
+        headers: {
+          Authorization: `Token token=${token}`,
+          Accept: 'application/vnd.pagerduty+json;version=2',
+        },
+      });
+      if (!res.ok) {
+        const body = await res.text().catch(() => '');
+        throw new Error(`PagerDuty API ${res.status}: ${body.slice(0, 200)}`);
+      }
+
+      const data = (await res.json()) as { incidents?: PagerDutyApiIncident[]; more?: boolean };
+      for (const inc of data.incidents ?? []) {
+        out.push({
+          externalId: inc.id,
+          title: inc.title,
+          description: inc.description ?? inc.title,
+          urgency: severityFrom(inc),
+          state: inc.status,
+          serviceHint: inc.service?.summary ?? '',
+          detectedAt: inc.created_at,
+          resolvedAt: inc.status === 'resolved' ? inc.last_status_change_at : undefined,
+          affectedUsers: 0, // PagerDuty no expone usuarios afectados en /incidents.
+          url: inc.html_url,
+        });
+      }
+      if (!data.more) break;
+    }
+
+    logger.info({ count: out.length, since }, 'PagerDuty live sync: incidentes traídos');
+    return out;
   },
 };
