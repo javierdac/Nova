@@ -28,10 +28,11 @@ export function ChartCard({ title, children }: { title: string; children: React.
       <CardHeader className="pb-2">
         <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
       </CardHeader>
-      <CardContent className="h-64 pt-2">
-        {/* minHeight guards against recharts' ResponsiveContainer collapsing to 0
-            on first mount (ResizeObserver race), which renders a blank chart. */}
-        <ResponsiveContainer width="100%" height="100%" minHeight={220}>
+      <CardContent className="pt-2">
+        {/* Fixed pixel height (width stays responsive). Using height="100%" makes
+            recharts' ResponsiveContainer collapse to 0 on first mount when the
+            parent's % height isn't resolved yet → blank chart. */}
+        <ResponsiveContainer width="100%" height={224}>
           {children as React.ReactElement}
         </ResponsiveContainer>
       </CardContent>

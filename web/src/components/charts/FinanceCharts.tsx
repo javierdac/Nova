@@ -28,9 +28,10 @@ export function FinChartCard({ title, children, action }: { title: string; child
         <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
         {action}
       </CardHeader>
-      <CardContent className="h-64 pt-2">
-        {/* minHeight guards against recharts collapsing to 0 height on first mount. */}
-        <ResponsiveContainer width="100%" height="100%" minHeight={220}>{children as React.ReactElement}</ResponsiveContainer>
+      <CardContent className="pt-2">
+        {/* Fixed pixel height (width stays responsive) — avoids recharts rendering
+            a blank chart when a % height resolves to 0 on first mount. */}
+        <ResponsiveContainer width="100%" height={224}>{children as React.ReactElement}</ResponsiveContainer>
       </CardContent>
     </Card>
   );
