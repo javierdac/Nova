@@ -1,5 +1,14 @@
 # Nova — Engineering Intelligence Platform
 
+[![CI](https://github.com/javierdac/Nova/actions/workflows/ci.yml/badge.svg)](https://github.com/javierdac/Nova/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
+![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-%E2%89%A520-339933?logo=node.js&logoColor=white)
+![Express](https://img.shields.io/badge/Express-API-000000?logo=express&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-Mongoose-47A248?logo=mongodb&logoColor=white)
+
 Nova is a production-grade SaaS platform that centralizes engineering
 **metrics, team & people management, OKRs, delivery forecasting, technical debt,
 incidents, architecture documentation, AI-powered insights, third-party
