@@ -15,9 +15,26 @@ interface SeedRefs {
   techDebtIds: Types.ObjectId[];
   incidentIds: Types.ObjectId[];
   userIds: Types.ObjectId[];
+  /** Locale for the few human-readable labels. Defaults to Spanish. */
+  locale?: 'es' | 'en';
 }
 
-export async function seedFinance({ teamIds, projectIds, techDebtIds, incidentIds, userIds }: SeedRefs): Promise<void> {
+/** Localized labels used inside the finance demo data. */
+const FINANCE_TEXT = {
+  es: {
+    computeService: 'Cómputo',
+    delayFeatures: ['Lanzamiento de Billing v2', 'Failover multi-región', 'SSO empresarial'],
+    hiringRoles: ['Ingeniero de Plataforma Senior', 'SRE Staff', 'Ingeniero de Producto'],
+  },
+  en: {
+    computeService: 'Compute',
+    delayFeatures: ['Billing v2 launch', 'Multi-region failover', 'Enterprise SSO'],
+    hiringRoles: ['Senior Platform Engineer', 'Staff SRE', 'Product Engineer'],
+  },
+} as const;
+
+export async function seedFinance({ teamIds, projectIds, techDebtIds, incidentIds, userIds, locale = 'es' }: SeedRefs): Promise<void> {
+  const tx = FINANCE_TEXT[locale];
   await Promise.all([
     CloudCostModel.deleteMany({}),
     ToolCostModel.deleteMany({}),
@@ -56,7 +73,7 @@ export async function seedFinance({ teamIds, projectIds, techDebtIds, incidentId
       };
       cloudRows.push({
         provider,
-        service: provider === 'AWS' ? 'EC2 + RDS + S3' : provider === 'MongoDB Atlas' ? 'Clúster M40' : 'Cómputo',
+        service: provider === 'AWS' ? 'EC2 + RDS + S3' : provider === 'MongoDB Atlas' ? 'Clúster M40' : tx.computeService,
         month: m,
         year,
         amount: Math.round((base[provider] ?? 1000) * (1 + m * 0.04)),
@@ -122,15 +139,15 @@ export async function seedFinance({ teamIds, projectIds, techDebtIds, incidentId
 
   // Cost of delay.
   await CostOfDelayModel.create([
-    { featureName: 'Lanzamiento de Billing v2', product: projectIds[0], team: teamIds[1], expectedMonthlyRevenue: 75000, delayMonths: 3, status: 'delayed' },
-    { featureName: 'Failover multi-región', product: projectIds[1], team: teamIds[0], expectedMonthlyRevenue: 40000, delayMonths: 2, status: 'at_risk' },
-    { featureName: 'SSO empresarial', team: teamIds[0], expectedMonthlyRevenue: 120000, delayMonths: 1, status: 'at_risk' },
+    { featureName: tx.delayFeatures[0], product: projectIds[0], team: teamIds[1], expectedMonthlyRevenue: 75000, delayMonths: 3, status: 'delayed' },
+    { featureName: tx.delayFeatures[1], product: projectIds[1], team: teamIds[0], expectedMonthlyRevenue: 40000, delayMonths: 2, status: 'at_risk' },
+    { featureName: tx.delayFeatures[2], team: teamIds[0], expectedMonthlyRevenue: 120000, delayMonths: 1, status: 'at_risk' },
   ]);
 
   // Hiring ROI.
   await HiringRoiModel.create([
-    { role: 'Ingeniero de Plataforma Senior', team: teamIds[0], seniority: 'senior', annualCost: 185000, estimatedProductivityGain: 18, estimatedRevenueImpact: 420000, status: 'proposed' },
-    { role: 'SRE Staff', team: teamIds[0], seniority: 'staff', annualCost: 220000, estimatedProductivityGain: 22, estimatedRevenueImpact: 350000, status: 'proposed' },
-    { role: 'Ingeniero de Producto', team: teamIds[1], seniority: 'mid', annualCost: 140000, estimatedProductivityGain: 12, estimatedRevenueImpact: 180000, status: 'approved' },
+    { role: tx.hiringRoles[0], team: teamIds[0], seniority: 'senior', annualCost: 185000, estimatedProductivityGain: 18, estimatedRevenueImpact: 420000, status: 'proposed' },
+    { role: tx.hiringRoles[1], team: teamIds[0], seniority: 'staff', annualCost: 220000, estimatedProductivityGain: 22, estimatedRevenueImpact: 350000, status: 'proposed' },
+    { role: tx.hiringRoles[2], team: teamIds[1], seniority: 'mid', annualCost: 140000, estimatedProductivityGain: 12, estimatedRevenueImpact: 180000, status: 'approved' },
   ]);
 }

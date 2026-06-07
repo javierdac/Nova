@@ -561,11 +561,26 @@ views are exempt because their inputs are enterable.**
 
 # Seed data
 
-`npm run seed -w server` runs `server/src/seed.ts` (+ `finance.seed.ts` and
-per-module seeds). It **wipes and repopulates** demo data in Spanish: an org of
-teams/users, projects, incidents, tech debt, architecture, OKRs (`2026-Q2`),
-1:1s, positions, skills, and every finance cost ledger, plus `MetricSnapshot`
-history. Demo login: `admin@nova.dev` / `Password123!` (CTO).
+Two locale variants of the same dataset coexist; each **wipes and repopulates**
+the same collections, so run whichever language you want to demo:
+
+| Script | File | Content |
+| --- | --- | --- |
+| `npm run seed -w server` | `server/src/seed.ts` | demo data in **Spanish** |
+| `npm run seed:en -w server` | `server/src/seed.en.ts` | same shape, content in **English** |
+
+Both seed an org of teams/users, projects, incidents, tech debt, architecture,
+OKRs (`2026-Q2`), 1:1s, positions, skills and 90 days of `MetricSnapshot`
+history, then call `seedFinance(...)` (in `finance.seed.ts`) for every finance
+cost ledger. The two scripts are intentionally structural mirrors — only the
+human-readable strings differ (titles, missions, descriptions, project/incident
+names, OKRs, 1:1 notes, skill names, finance feature/role labels). Person names,
+emails, numbers, dates and signal values are identical, so derived analytics
+(attrition risk, finance roll-ups, forecasts) look the same in either locale.
+`finance.seed.ts` takes a `locale: 'es' | 'en'` arg (defaults to `'es'`) to swap
+its few labels (cloud service name, cost-of-delay features, hiring-ROI roles).
+
+Demo login (both): `admin@nova.dev` / `Password123!` (CTO).
 
 Because of the "everything is enterable" rule, the seed is a convenience for
 demos/tests — every seeded entity also has a UI + endpoint to create it.
@@ -606,6 +621,11 @@ add a page → update the [frontend reference](#frontend-reference) and
 
 ### Changelog
 
+- **2026-06-07** — Added an English seed variant (`server/src/seed.en.ts`, run
+  with `npm run seed:en`) that coexists with the Spanish `seed.ts` — a
+  structural mirror with English content. Parameterized `finance.seed.ts` with a
+  `locale` arg so its few labels follow suit. Documented both under
+  [Seed data](#seed-data); added the script to `README.md`.
 - **2026-06-07** — Added **`docs/USER_MANUAL.md`**: an end-user, screen-by-screen
   guide (English, no screenshots) covering every screen — purpose, location, what
   you see, what you can do, RBAC and data source — grouped by the sidebar. Linked

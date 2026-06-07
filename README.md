@@ -129,7 +129,7 @@ Nova/
 │       │   ├── okrs/ org/ investment/ finance/
 │       ├── integrations/        # provider/connector layer (github/jira/pagerduty/cloud)
 │       ├── routes.ts            # mounts every module under /api/v1
-│       ├── seed.ts              # demo data (Spanish), finance.seed.ts for cost ledgers
+│       ├── seed.ts / seed.en.ts # demo data (Spanish / English), finance.seed.ts for cost ledgers
 │       └── index.ts             # app bootstrap
 ├── web/                         # React + Vite + TypeScript SPA
 │   └── src/
@@ -206,6 +206,7 @@ cp server/.env.example server/.env           # configure the API
 # start MongoDB locally, or: docker compose up mongo
 
 npm run seed -w server                        # seed demo data (Spanish)
+# or: npm run seed:en -w server               # same dataset, content in English
 npm run dev                                    # API + web concurrently
 ```
 
@@ -256,7 +257,8 @@ Frontend reads `VITE_API_URL` (defaults to `http://localhost:4000/api/v1`).
 | `npm run build` | Build server then web |
 | `npm run test` | Backend Jest suite (unit + integration) |
 | `npm run lint` | Lint server + web |
-| `npm run seed -w server` | Seed demo data (incl. finance ledgers) |
+| `npm run seed -w server` | Seed demo data in Spanish (incl. finance ledgers) |
+| `npm run seed:en -w server` | Seed the same demo dataset in English |
 | `npm run docker:up` / `docker:down` | Build & run / tear down the full stack |
 | `npm run dev -w web` · `npm run typecheck -w web` | Web-only dev / typecheck |
 

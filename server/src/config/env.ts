@@ -27,8 +27,22 @@ const envSchema = z.object({
   OPENAI_API_KEY: z.string().optional(),
   OPENAI_MODEL: z.string().default('gpt-4o-mini'),
 
-  // Integraciones live (opcionales; sin token, el provider corre en modo dummy).
+  // Integraciones live (opcionales; sin credenciales, el provider corre en modo dummy).
   PAGERDUTY_API_TOKEN: z.string().optional(),
+  // Jira Cloud: host (https://acme.atlassian.net) + email + API token (Basic auth).
+  JIRA_BASE_URL: z.string().optional(),
+  JIRA_EMAIL: z.string().optional(),
+  JIRA_API_TOKEN: z.string().optional(),
+  JIRA_JQL: z.string().default('ORDER BY updated DESC'),
+  JIRA_STORY_POINTS_FIELD: z.string().default('customfield_10016'),
+  // GitHub: PAT + lista de repos "owner/repo" separada por comas. API URL para GHE.
+  GITHUB_TOKEN: z.string().optional(),
+  GITHUB_REPOS: z.string().optional(),
+  GITHUB_API_URL: z.string().default('https://api.github.com'),
+  // Cloud billing: endpoint de export (CUR/BigQuery export/FinOps tool) que
+  // devuelve filas de costo en JSON. Token opcional (Bearer).
+  CLOUD_BILLING_URL: z.string().optional(),
+  CLOUD_BILLING_TOKEN: z.string().optional(),
 });
 
 const parsed = envSchema.safeParse(process.env);
