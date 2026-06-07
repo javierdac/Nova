@@ -324,6 +324,14 @@ update the docs in the same change:
 
 A short **Changelog** at the bottom of `docs/DETAIL.md` records notable changes.
 
+## Contributing
+
+Contributions are welcome. Fork the repo, create a feature branch, run the
+checks (`npm run lint`, `npm run test`, `npm run typecheck -w web`) and open a
+pull request. By contributing you agree your work is licensed under the MIT
+License below.
+
 ## License
 
-Proprietary — © Nova.
+Released under the **[MIT License](LICENSE)** © 2026 Javier DAccorso — free to
+use, modify and distribute, including commercially, with attribution.

@@ -2,6 +2,7 @@
   "name": "nova",
   "version": "1.0.0",
   "private": true,
+  "license": "MIT",
   "description": "Nova — Engineering Intelligence Platform for Engineering Managers, Heads of Engineering and CTOs",
   "workspaces": [
     "server",
